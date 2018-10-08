@@ -1,3 +1,0 @@
-allow hal_sensors_default sysfs:file { open read };
-allow sensors sysfs:file { open read };
-allow sensors sensors:capability dac_override;

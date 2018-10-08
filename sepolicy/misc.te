@@ -1,4 +1,0 @@
-allow bootanim system_data_file:dir read;
-allow hal_rcsservice sysfs:file { open read };
-allow hal_gnss_qti sysfs:file { read open };
-
