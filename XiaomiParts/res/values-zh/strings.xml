@@ -14,9 +14,8 @@
      limitations under the License.
 -->
 <resources>
-    <string name="advanced_settings">Advanced</string>
-    <string name="advanced_settings_summary">Extra Settings</string>
-    <string name="camera_title">Camera</string>
-    <string name="camera_hal3_title">Enable Camera2 API</string>
-    <string name="camera_title_summary">Requires reboot</string>
+    <string name="advanced_settings">扩展</string>
+    <string name="advanced_settings_summary">附加高级设置</string>
+    <string name="camera_title">相机</string>
+    <string name="camera_hal3_title">开启 Camera2 API</string>
 </resources>
