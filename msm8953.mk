@@ -136,9 +136,7 @@ PRODUCT_PACKAGES += \
     liboverlay \
     libqdMetaData.system \
     libgenlock \
-    libtinyxml \
-    vendor.display.config@1.0 \
-    vendor.display.config@1.0_vendor
+    libtinyxml
 
 # Doze mode
 PRODUCT_PACKAGES += \
@@ -202,7 +200,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/keylayout/uinput-fpc.kl:$(TARGET_COPY_OUT_VENDOR)/usr/keylayout/uinput-fpc.kl
 
 # IPA Manager
-#PRODUCT_PACKAGES += \
+# PRODUCT_PACKAGES += \
     ipacm \
     IPACM_cfg.xml
 
