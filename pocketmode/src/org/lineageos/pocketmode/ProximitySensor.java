@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2016 The CyanogenMod Project
+ * Copyright (c) 2018 The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +15,7 @@
  * limitations under the License.
  */
 
-package com.cyanogenmod.pocketmode;
+package org.lineageos.pocketmode;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -22,14 +23,15 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.util.Log;
-import org.cyanogenmod.internal.util.FileUtils;
+
+import org.lineageos.internal.util.FileUtils;
 
 public class ProximitySensor implements SensorEventListener {
 
     private static final boolean DEBUG = false;
     private static final String TAG = "PocketModeProximity";
 
-    private static final String FPC_FILE = "/sys/devices/soc/soc:fpc_fpc1020/proximity_state";
+    private static final String FPC_FILE = "/sys/devices/soc/soc:fpc1020/proximity_state";
 
     private SensorManager mSensorManager;
     private Sensor mSensor;
@@ -37,8 +39,7 @@ public class ProximitySensor implements SensorEventListener {
 
     public ProximitySensor(Context context) {
         mContext = context;
-        mSensorManager = (SensorManager)
-                mContext.getSystemService(Context.SENSOR_SERVICE);
+        mSensorManager = mContext.getSystemService(SensorManager.class);
         mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
     }
 
