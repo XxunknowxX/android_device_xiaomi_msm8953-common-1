@@ -364,6 +364,7 @@ PRODUCT_PACKAGES += \
     libwpa_client \
     hostapd \
     dhcpcd.conf \
+    wcnss_service \
     wificond \
     wpa_supplicant \
     wpa_supplicant.conf
