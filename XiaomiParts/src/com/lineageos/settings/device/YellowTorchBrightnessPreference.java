@@ -12,10 +12,10 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program. If not, see <http://www.gnu.org/licenses/>.
+* along with this program. If not, see <http://www.gnu.com/licenses/>.
 *
 */
-package com.screwd.settings.device;
+package com.lineageos.settings.device;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -27,13 +27,12 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Button;
 import android.os.Bundle;
 import android.util.Log;
 
 import java.util.List;
 
-public class WhiteTorchBrightnessPreference extends SeekBarDialogPreference implements
+public class YellowTorchBrightnessPreference extends SeekBarDialogPreference implements
         SeekBar.OnSeekBarChangeListener {
 
     private SeekBar mSeekBar;
@@ -42,14 +41,10 @@ public class WhiteTorchBrightnessPreference extends SeekBarDialogPreference impl
     private int mMaxValue;
     private float offset;
     private TextView mValueText;
-    private Button mPlusOneButton;
-    private Button mMinusOneButton;
-    private Button mRestoreDefaultButton;
 
-    private static final String FILE_BRIGHTNESS = "/sys/devices/soc/qpnp-flash-led-25/leds/led:torch_0/max_brightness";
-    private static final int DEFAULT_VALUE = 200;
+    private static final String FILE_BRIGHTNESS = "/sys/devices/soc/qpnp-flash-led-25/leds/led:torch_1/max_brightness";
 
-    public WhiteTorchBrightnessPreference(Context context, AttributeSet attrs) {
+    public YellowTorchBrightnessPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
         mMinValue = 0;
         mMaxValue = 200;
@@ -68,39 +63,12 @@ public class WhiteTorchBrightnessPreference extends SeekBarDialogPreference impl
         super.onBindDialogView(view);
 
         mOldBrightness = Integer.parseInt(getValue(getContext()));
-        mSeekBar = (SeekBar) view.findViewById(R.id.torchSeekBar);
+        mSeekBar = getSeekBar(view);
         mSeekBar.setMax(mMaxValue - mMinValue);
         mSeekBar.setProgress(mOldBrightness - mMinValue);
         mValueText = (TextView) view.findViewById(R.id.current_value);
         mValueText.setText(Integer.toString(Math.round(mOldBrightness / offset)) + "%");
         mSeekBar.setOnSeekBarChangeListener(this);
-        mPlusOneButton = (Button) view.findViewById(R.id.plus_one);
-        mPlusOneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.plus_one) {
-                    singleStepPlus();
-                }
-            }
-        });
-        mMinusOneButton = (Button) view.findViewById(R.id.minus_one);
-        mMinusOneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.minus_one) {
-                    singleStepMinus();
-                }
-            }
-        });
-        mRestoreDefaultButton = (Button) view.findViewById(R.id.restore_default);
-        mRestoreDefaultButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.restore_default) {
-                    restoreDefault();
-                }
-            }
-        });
     }
 
     public static boolean isSupported() {
@@ -120,7 +88,7 @@ public class WhiteTorchBrightnessPreference extends SeekBarDialogPreference impl
             return;
         }
 
-        String storedValue = PreferenceManager.getDefaultSharedPreferences(context).getString(DeviceSettings.KEY_WHITE_TORCH_BRIGHTNESS, "200"); 
+        String storedValue = PreferenceManager.getDefaultSharedPreferences(context).getString(DeviceSettings.KEY_YELLOW_TORCH_BRIGHTNESS, "200"); 
         Utils.writeValue(FILE_BRIGHTNESS, storedValue);
     }
 
@@ -146,7 +114,7 @@ public class WhiteTorchBrightnessPreference extends SeekBarDialogPreference impl
             final int value = mSeekBar.getProgress() + mMinValue;
             setValue(String.valueOf(value));
             SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(getContext()).edit();
-            editor.putString(DeviceSettings.KEY_WHITE_TORCH_BRIGHTNESS, String.valueOf(value));
+            editor.putString(DeviceSettings.KEY_YELLOW_TORCH_BRIGHTNESS, String.valueOf(value));
             editor.commit();
         } else {
             restoreOldState();
@@ -155,24 +123,6 @@ public class WhiteTorchBrightnessPreference extends SeekBarDialogPreference impl
 
     private void restoreOldState() {
         setValue(String.valueOf(mOldBrightness));
-    }
-
-    private void singleStepPlus() {
-        int currentValue = mSeekBar.getProgress();
-        if (currentValue < mMaxValue) {
-            mSeekBar.setProgress(currentValue + Math.round(offset));        
-        }
-    }
-
-    private void singleStepMinus() {
-        int currentValue = mSeekBar.getProgress();
-        if (currentValue > mMinValue) {
-            mSeekBar.setProgress(currentValue - Math.round(offset));
-        }
-    }
-
-    private void restoreDefault() {
-        mSeekBar.setProgress(DEFAULT_VALUE);
     }
 }
 

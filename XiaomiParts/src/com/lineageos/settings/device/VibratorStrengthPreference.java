@@ -12,10 +12,10 @@
 * GNU General Public License for more details.
 *
 * You should have received a copy of the GNU General Public License
-* along with this program. If not, see <http://www.gnu.org/licenses/>.
+* along with this program. If not, see <http://www.gnu.com/licenses/>.
 *
 */
-package com.screwd.settings.device;
+package com.lineageos.settings.device;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -27,14 +27,11 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Button;
 import android.os.Bundle;
 import android.util.Log;
 import android.os.Vibrator;
 
 import java.util.List;
-
-import com.screwd.settings.device.R;
 
 public class VibratorStrengthPreference extends SeekBarDialogPreference implements
         SeekBar.OnSeekBarChangeListener {
@@ -46,13 +43,9 @@ public class VibratorStrengthPreference extends SeekBarDialogPreference implemen
     private float offset;
     private Vibrator mVibrator;
     private TextView mValueText;
-    private Button mPlusOneButton;
-    private Button mMinusOneButton;
-    private Button mRestoreDefaultButton;
 
-    private static final String FILE_LEVEL = "/sys/devices/virtual/timed_output/vibrator/vtg_level";
+    private static final String FILE_LEVEL = "/sys/class/timed_output/vibrator/vtg_level";
     private static final long testVibrationPattern[] = {0,250};
-    private static final int DEFAULT_VALUE = 2873;
 
     public VibratorStrengthPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -77,39 +70,12 @@ public class VibratorStrengthPreference extends SeekBarDialogPreference implemen
         super.onBindDialogView(view);
 
         mOldStrength = Integer.parseInt(getValue(getContext()));
-        mSeekBar = (SeekBar) view.findViewById(R.id.vibratorSeekBar);
+        mSeekBar = getSeekBar(view);
         mSeekBar.setMax(mMaxValue - mMinValue);
         mSeekBar.setProgress(mOldStrength - mMinValue);
         mValueText = (TextView) view.findViewById(R.id.current_value);
         mValueText.setText(Integer.toString(Math.round(mOldStrength / offset)) + "%");
         mSeekBar.setOnSeekBarChangeListener(this);
-        mPlusOneButton = (Button) view.findViewById(R.id.plus_one);
-        mPlusOneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.plus_one) {
-                    singleStepPlus();
-                }
-            }
-        });
-        mMinusOneButton = (Button) view.findViewById(R.id.minus_one);
-        mMinusOneButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.minus_one) {
-                    singleStepMinus();
-                }
-            }
-        });
-        mRestoreDefaultButton = (Button) view.findViewById(R.id.restore_default);
-        mRestoreDefaultButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (v.getId() == R.id.restore_default) {
-                    restoreDefault();
-                }
-            }
-        });
     }
 
     public static boolean isSupported() {
@@ -117,7 +83,7 @@ public class VibratorStrengthPreference extends SeekBarDialogPreference implemen
     }
 
     public static String getValue(Context context) {
-        return Utils.getFileValue(FILE_LEVEL, String.valueOf(DEFAULT_VALUE));
+        return Utils.getFileValue(FILE_LEVEL, "2700");
     }
 
     private void setValue(String newValue) {
@@ -129,7 +95,7 @@ public class VibratorStrengthPreference extends SeekBarDialogPreference implemen
             return;
         }
 
-        String storedValue = PreferenceManager.getDefaultSharedPreferences(context).getString(DeviceSettings.KEY_VIBSTRENGTH, String.valueOf(DEFAULT_VALUE)); 
+        String storedValue = PreferenceManager.getDefaultSharedPreferences(context).getString(DeviceSettings.KEY_VIBSTRENGTH, "2700"); 
         Utils.writeValue(FILE_LEVEL, storedValue);
     }
 
@@ -166,24 +132,6 @@ public class VibratorStrengthPreference extends SeekBarDialogPreference implemen
 
     private void restoreOldState() {
         setValue(String.valueOf(mOldStrength));
-    }
-
-    private void singleStepPlus() {
-        int currentValue = mSeekBar.getProgress();
-        if (currentValue < mMaxValue) {
-            mSeekBar.setProgress(currentValue + Math.round(offset));        
-        }
-    }
-
-    private void singleStepMinus() {
-        int currentValue = mSeekBar.getProgress();
-        if (currentValue > mMinValue) {
-            mSeekBar.setProgress(currentValue - Math.round(offset));
-        }
-    }
-
-    private void restoreDefault() {
-        mSeekBar.setProgress(DEFAULT_VALUE);
     }
 }
 
