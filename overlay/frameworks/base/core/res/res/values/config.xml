@@ -388,4 +388,8 @@
     <!-- Enable NightLight -->
     <bool name="config_nightDisplayAvailable">true</bool>
 
+    <!-- Whether a software navigation bar should be shown. NOTE: in the future this may be
+         autodetected from the Configuration. -->
+    <bool name="config_showNavigationBar">false</bool>
+
 </resources>
